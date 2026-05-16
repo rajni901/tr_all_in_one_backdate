@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_backdate_wizard_form" model="ir.ui.view">
+        <field name="name">backdate.wizard.form</field>
+        <field name="model">backdate.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Assign Backdate">
+                <group>
+                    <field name="model" invisible="1"/>
+                    <field name="res_ids" invisible="1"/>
+                    <field name="use_datetime" invisible="1"/>
+                    <field name="remarks_required" invisible="1"/>
+                    <field name="backdate_datetime"
+                           string="Backdate"
+                           invisible="not use_datetime"
+                           required="use_datetime"/>
+                    <field name="backdate"
+                           string="Backdate"
+                           invisible="use_datetime"
+                           required="not use_datetime"/>
+                    <field name="remarks"
+                           placeholder="Reason for backdate..."
+                           required="remarks_required"/>
+                </group>
+                <footer>
+                    <button name="action_assign" type="object"
+                            string="Assign Backdate" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

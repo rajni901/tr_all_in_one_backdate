@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_config_settings_view_backdate" model="ir.ui.view">
+        <field name="name">res.config.settings.backdate</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <form position="inside">
+                <app data-string="Backdate" string="Backdate" name="tr_all_in_one_backdate">
+                    <block title="All In One Backdate" id="backdate_block">
+                        <setting string="Sale Order Backdate">
+                            <field name="backdate_sale"/>
+                        </setting>
+                        <setting string="Purchase Order Backdate">
+                            <field name="backdate_purchase"/>
+                        </setting>
+                        <setting string="Invoice / Bill Backdate">
+                            <field name="backdate_invoice"/>
+                        </setting>
+                        <setting string="Payment Backdate">
+                            <field name="backdate_payment"/>
+                        </setting>
+                        <setting string="Inventory / Picking Backdate">
+                            <field name="backdate_inventory"/>
+                        </setting>
+                        <setting string="Remarks Mandatory"
+                                 help="Require users to enter a reason when assigning backdate.">
+                            <field name="backdate_remarks_required"/>
+                        </setting>
+                    </block>
+                </app>
+            </form>
+        </field>
+    </record>
+
+</odoo>

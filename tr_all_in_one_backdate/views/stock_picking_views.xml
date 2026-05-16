@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_stock_picking_backdate_form" model="ir.ui.view">
+        <field name="name">stock.picking.backdate.form</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='button_validate']" position="before">
+                <button name="action_backdate_wizard"
+                        string="Set Backdate"
+                        type="object"
+                        class="btn-secondary"
+                        invisible="state in ('done', 'cancel')"/>
+            </xpath>
+            <xpath expr="//field[@name='scheduled_date']" position="after">
+                <field name="backdate" invisible="not backdate" readonly="1"/>
+                <field name="backdate_remarks" invisible="not backdate_remarks" readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_picking_mass_backdate" model="ir.actions.server">
+        <field name="name">Assign Backdate</field>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_type">action</field>
+        <field name="state">code</field>
+        <field name="code">
+action = {
+    'type': 'ir.actions.act_window',
+    'name': 'Assign Backdate',
+    'res_model': 'backdate.wizard',
+    'view_mode': 'form',
+    'target': 'new',
+    'context': {
+        'default_model': 'stock.picking',
+        'default_res_ids': records.ids,
+    },
+}
+        </field>
+    </record>
+
+</odoo>
