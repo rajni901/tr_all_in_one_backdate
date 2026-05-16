@@ -9,17 +9,18 @@
                 <group>
                     <field name="model" invisible="1"/>
                     <field name="res_ids" invisible="1"/>
-                    <field name="use_datetime" invisible="1"/>
+                    <field name="is_date" invisible="1"/>
                     <field name="remarks_required" invisible="1"/>
-                    <field name="backdate_datetime"
-                           string="Backdate"
-                           invisible="not use_datetime"
-                           required="use_datetime"/>
                     <field name="backdate"
                            string="Backdate"
-                           invisible="use_datetime"
-                           required="not use_datetime"/>
+                           invisible="not is_date"
+                           required="is_date"/>
+                    <field name="backdate_datetime"
+                           string="Backdate"
+                           invisible="is_date"
+                           required="not is_date"/>
                     <field name="remarks"
+                           string="Remarks"
                            placeholder="Reason for backdate..."
                            required="remarks_required"/>
                 </group>

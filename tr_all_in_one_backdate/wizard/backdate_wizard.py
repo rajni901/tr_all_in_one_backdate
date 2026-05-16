@@ -7,20 +7,12 @@ class BackdateWizard(models.TransientModel):
     _description = 'Assign Backdate'
 
     model = fields.Char(string='Model', readonly=True)
-    res_ids = fields.Json(string='Record IDs')
-    backdate = fields.Date(string='Backdate', required=True, default=fields.Date.today)
+    res_ids = fields.Char(string='Record IDs', readonly=True)
+    is_date = fields.Boolean(default=False)
+    backdate = fields.Date(string='Backdate', default=fields.Date.today)
     backdate_datetime = fields.Datetime(string='Backdate', default=fields.Datetime.now)
-    remarks = fields.Char(string='Remarks')
-    remarks_required = fields.Boolean(
-        compute='_compute_remarks_required',
-    )
-    use_datetime = fields.Boolean(compute='_compute_use_datetime')
-
-    @api.depends('model')
-    def _compute_use_datetime(self):
-        datetime_models = ['sale.order', 'purchase.order', 'stock.picking']
-        for rec in self:
-            rec.use_datetime = rec.model in datetime_models
+    remarks = fields.Char(string='Remarks', placeholder='Reason for backdate...')
+    remarks_required = fields.Boolean(compute='_compute_remarks_required')
 
     @api.depends()
     def _compute_remarks_required(self):
@@ -36,14 +28,25 @@ class BackdateWizard(models.TransientModel):
             if rec.remarks_required and not rec.remarks:
                 raise ValidationError(_('Remarks are mandatory when assigning a backdate.'))
 
+    def _get_records(self):
+        ids = [int(i) for i in (self.res_ids or '').split(',') if i.strip()]
+        return self.env[self.model].browse(ids)
+
     def action_assign(self):
         self.ensure_one()
-        if not self.res_ids:
-            return
-        records = self.env[self.model].browse(self.res_ids)
-        date_val = self.backdate_datetime if self.use_datetime else self.backdate
+        records = self._get_records()
+        if not records:
+            return {'type': 'ir.actions.act_window_close'}
+
+        date_val = self.backdate if self.is_date else self.backdate_datetime
         records.write({
             'backdate': date_val,
             'backdate_remarks': self.remarks or '',
         })
+        if self.remarks:
+            for rec in records:
+                rec.message_post(
+                    body=_('Backdate set to %s. Remarks: %s', date_val, self.remarks),
+                    subtype_xmlid='mail.mt_note',
+                )
         return {'type': 'ir.actions.act_window_close'}

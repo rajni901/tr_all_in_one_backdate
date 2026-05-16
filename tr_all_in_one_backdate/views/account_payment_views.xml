@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <record id="view_purchase_order_backdate_form" model="ir.ui.view">
-        <field name="name">purchase.order.backdate.form</field>
-        <field name="model">purchase.order</field>
-        <field name="inherit_id" ref="purchase.purchase_form_view"/>
+    <record id="view_account_payment_backdate_form" model="ir.ui.view">
+        <field name="name">account.payment.backdate.form</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_form"/>
         <field name="arch" type="xml">
 
-            <xpath expr="//button[@name='button_confirm']" position="before">
+            <xpath expr="//button[@name='action_post']" position="before">
                 <button name="action_backdate_wizard"
                         string="Set Backdate"
                         type="object"
                         class="btn-secondary"
-                        invisible="state not in ('draft', 'sent')"/>
+                        invisible="state != 'draft'"/>
             </xpath>
 
-            <xpath expr="//field[@name='date_order']" position="after">
-                <field name="backdate" string="Backdate Date"
+            <xpath expr="//field[@name='date']" position="after">
+                <field name="backdate" string="Backdate"
                        invisible="not backdate" readonly="1"/>
                 <field name="backdate_remarks" string="Backdate Remarks"
                        invisible="not backdate_remarks" readonly="1"/>
@@ -25,10 +25,10 @@
         </field>
     </record>
 
-    <record id="action_purchase_mass_backdate" model="ir.actions.server">
+    <record id="action_payment_mass_backdate" model="ir.actions.server">
         <field name="name">Assign Backdate</field>
-        <field name="model_id" ref="purchase.model_purchase_order"/>
-        <field name="binding_model_id" ref="purchase.model_purchase_order"/>
+        <field name="model_id" ref="account.model_account_payment"/>
+        <field name="binding_model_id" ref="account.model_account_payment"/>
         <field name="binding_type">action</field>
         <field name="state">code</field>
         <field name="code">
@@ -39,9 +39,9 @@ action = {
     'view_mode': 'form',
     'target': 'new',
     'context': {
-        'default_model': 'purchase.order',
+        'default_model': 'account.payment',
         'default_res_ids': ','.join(str(r) for r in records.ids),
-        'default_is_date': False,
+        'default_is_date': True,
     },
 }
         </field>

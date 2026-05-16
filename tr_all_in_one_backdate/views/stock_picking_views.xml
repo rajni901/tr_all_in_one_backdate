@@ -6,6 +6,7 @@
         <field name="model">stock.picking</field>
         <field name="inherit_id" ref="stock.view_picking_form"/>
         <field name="arch" type="xml">
+
             <xpath expr="//button[@name='button_validate']" position="before">
                 <button name="action_backdate_wizard"
                         string="Set Backdate"
@@ -13,10 +14,14 @@
                         class="btn-secondary"
                         invisible="state in ('done', 'cancel')"/>
             </xpath>
+
             <xpath expr="//field[@name='scheduled_date']" position="after">
-                <field name="backdate" invisible="not backdate" readonly="1"/>
-                <field name="backdate_remarks" invisible="not backdate_remarks" readonly="1"/>
+                <field name="backdate" string="Backdate"
+                       invisible="not backdate" readonly="1"/>
+                <field name="backdate_remarks" string="Backdate Remarks"
+                       invisible="not backdate_remarks" readonly="1"/>
             </xpath>
+
         </field>
     </record>
 
@@ -35,7 +40,8 @@ action = {
     'target': 'new',
     'context': {
         'default_model': 'stock.picking',
-        'default_res_ids': records.ids,
+        'default_res_ids': ','.join(str(r) for r in records.ids),
+        'default_is_date': False,
     },
 }
         </field>

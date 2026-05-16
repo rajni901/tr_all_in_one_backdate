@@ -4,8 +4,11 @@ from odoo import _, fields, models
 class PurchaseOrder(models.Model):
     _inherit = 'purchase.order'
 
-    backdate = fields.Datetime(string='Backdate', copy=False)
+    backdate = fields.Datetime(string='Backdate', copy=False, tracking=True)
     backdate_remarks = fields.Char(string='Backdate Remarks', copy=False)
+
+    def _is_backdate_enabled(self):
+        return self.env['ir.config_parameter'].sudo().get_param('tr_backdate.purchase', False)
 
     def action_backdate_wizard(self):
         return {
@@ -17,21 +20,18 @@ class PurchaseOrder(models.Model):
             'context': {
                 'default_model': 'purchase.order',
                 'default_res_ids': self.ids,
-                'default_current_date': self.date_order,
             },
         }
 
     def button_confirm(self):
         res = super().button_confirm()
         for order in self:
-            if order.backdate:
+            if order.backdate and self._is_backdate_enabled():
                 order.write({
                     'date_order': order.backdate,
                     'date_approve': order.backdate,
                 })
-                order.picking_ids.write({
-                    'scheduled_date': order.backdate,
-                    'date_done': order.backdate,
-                })
-                order.picking_ids.move_ids.write({'date': order.backdate})
+                if order.picking_ids:
+                    order.picking_ids.write({'scheduled_date': order.backdate})
+                    order.picking_ids.move_ids.write({'date': order.backdate})
         return res

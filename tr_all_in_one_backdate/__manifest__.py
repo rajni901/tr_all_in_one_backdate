@@ -16,8 +16,10 @@ Features:
 - Payment Backdate
 - Inventory / Picking Backdate
 - Backdate with Remarks
-- Mass Assign Backdate
+- Mass Assign Backdate from list view
 - Backdate reflects in Stock Moves & Journal Entries
+- Toggle each feature independently from Settings
+- Optional mandatory remarks
     """,
     'author': 'Technical Rajni',
     'website': 'https://www.technicalrajni.com',
@@ -30,6 +32,7 @@ Features:
         'views/sale_order_views.xml',
         'views/purchase_order_views.xml',
         'views/account_move_views.xml',
+        'views/account_payment_views.xml',
         'views/stock_picking_views.xml',
     ],
     'images': ['static/description/banner.png'],

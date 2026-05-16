@@ -1,14 +1,14 @@
 from odoo import _, fields, models
 
 
-class AccountMove(models.Model):
-    _inherit = 'account.move'
+class AccountPayment(models.Model):
+    _inherit = 'account.payment'
 
     backdate = fields.Date(string='Backdate', copy=False, tracking=True)
     backdate_remarks = fields.Char(string='Backdate Remarks', copy=False)
 
     def _is_backdate_enabled(self):
-        return self.env['ir.config_parameter'].sudo().get_param('tr_backdate.invoice', False)
+        return self.env['ir.config_parameter'].sudo().get_param('tr_backdate.payment', False)
 
     def action_backdate_wizard(self):
         return {
@@ -18,17 +18,14 @@ class AccountMove(models.Model):
             'view_mode': 'form',
             'target': 'new',
             'context': {
-                'default_model': 'account.move',
+                'default_model': 'account.payment',
                 'default_res_ids': self.ids,
                 'default_is_date': True,
             },
         }
 
     def action_post(self):
-        for move in self:
-            if move.backdate and self._is_backdate_enabled():
-                move.write({
-                    'invoice_date': move.backdate,
-                    'date': move.backdate,
-                })
+        for payment in self:
+            if payment.backdate and self._is_backdate_enabled():
+                payment.date = payment.backdate
         return super().action_post()

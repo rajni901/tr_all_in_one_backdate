@@ -6,6 +6,7 @@
         <field name="model">account.move</field>
         <field name="inherit_id" ref="account.view_move_form"/>
         <field name="arch" type="xml">
+
             <xpath expr="//button[@name='action_post']" position="before">
                 <button name="action_backdate_wizard"
                         string="Set Backdate"
@@ -13,10 +14,14 @@
                         class="btn-secondary"
                         invisible="state != 'draft'"/>
             </xpath>
+
             <xpath expr="//field[@name='invoice_date']" position="after">
-                <field name="backdate" invisible="not backdate" readonly="1"/>
-                <field name="backdate_remarks" invisible="not backdate_remarks" readonly="1"/>
+                <field name="backdate" string="Backdate"
+                       invisible="not backdate" readonly="1"/>
+                <field name="backdate_remarks" string="Backdate Remarks"
+                       invisible="not backdate_remarks" readonly="1"/>
             </xpath>
+
         </field>
     </record>
 
@@ -35,7 +40,8 @@ action = {
     'target': 'new',
     'context': {
         'default_model': 'account.move',
-        'default_res_ids': records.ids,
+        'default_res_ids': ','.join(str(r) for r in records.ids),
+        'default_is_date': True,
     },
 }
         </field>

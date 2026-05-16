@@ -4,8 +4,11 @@ from odoo import _, fields, models
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
-    backdate = fields.Datetime(string='Backdate', copy=False)
+    backdate = fields.Datetime(string='Backdate', copy=False, tracking=True)
     backdate_remarks = fields.Char(string='Backdate Remarks', copy=False)
+
+    def _is_backdate_enabled(self):
+        return self.env['ir.config_parameter'].sudo().get_param('tr_backdate.inventory', False)
 
     def action_backdate_wizard(self):
         return {
@@ -17,13 +20,12 @@ class StockPicking(models.Model):
             'context': {
                 'default_model': 'stock.picking',
                 'default_res_ids': self.ids,
-                'default_current_date': self.scheduled_date,
             },
         }
 
     def button_validate(self):
         for picking in self:
-            if picking.backdate:
+            if picking.backdate and self._is_backdate_enabled():
                 picking.write({
                     'scheduled_date': picking.backdate,
                     'date_done': picking.backdate,
