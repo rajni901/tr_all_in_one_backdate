@@ -1,3 +1,5 @@
+import ast
+
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
@@ -29,7 +31,15 @@ class BackdateWizard(models.TransientModel):
                 raise ValidationError(_('Remarks are mandatory when assigning a backdate.'))
 
     def _get_records(self):
-        ids = [int(i) for i in (self.res_ids or '').split(',') if i.strip()]
+        raw = self.res_ids or ''
+        try:
+            parsed = ast.literal_eval(raw)
+            if isinstance(parsed, (list, tuple)):
+                ids = [int(i) for i in parsed]
+            else:
+                ids = [int(parsed)]
+        except (ValueError, SyntaxError):
+            ids = [int(i.strip()) for i in raw.split(',') if i.strip()]
         return self.env[self.model].browse(ids)
 
     def action_assign(self):

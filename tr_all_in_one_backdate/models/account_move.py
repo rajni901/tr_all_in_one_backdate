@@ -4,7 +4,7 @@ from odoo import _, fields, models
 class AccountMove(models.Model):
     _inherit = 'account.move'
 
-    backdate = fields.Date(string='Backdate', copy=False, tracking=True)
+    backdate = fields.Date(string='Backdate', copy=False)
     backdate_remarks = fields.Char(string='Backdate Remarks', copy=False)
 
     def _is_backdate_enabled(self):
