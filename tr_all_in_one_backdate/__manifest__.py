@@ -4,7 +4,7 @@
     'category': 'Accounting',
     'summary': 'Backdate Sale, Purchase, Invoice, Payment and Inventory with remarks',
     'description': """
-All In One Backdate — by Technical Rajni
+All In One Backdate — by Vayu Sharma
 =========================================
 Confirm orders and documents with a custom backdate.
 
@@ -21,8 +21,8 @@ Features:
 - Toggle each feature independently from Settings
 - Optional mandatory remarks
     """,
-    'author': 'Technical Rajni',
-    'website': 'https://www.technicalrajni.com',
+    'author': 'Vayu Sharma',
+    'website': '',
     'license': 'OPL-1',
     'depends': ['sale_management', 'purchase', 'account', 'stock', 'mail'],
     'data': [
